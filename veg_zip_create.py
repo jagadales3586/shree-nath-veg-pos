@@ -2,7 +2,7 @@ import zipfile
 import os
 
 # फोल्डर जिथे फोटो आहेत (तू स्वतःचे फोटो ठेवू शकतोस)
-source_folder = "images/vegitable_images"
+source_folder = "images/vegetable_images"
 
 # ZIP फाईलचं नाव
 zip_filename = "Veg_Fruit_Leafy_Marathi.zip"
