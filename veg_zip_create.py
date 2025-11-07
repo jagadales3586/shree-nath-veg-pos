@@ -1,13 +1,20 @@
 import zipfile
 import os
 
-# फोल्डर जिथे फोटो आहेत (तू स्वतःचे फोटो ठेवू शकतोस)
-source_folder = "images/vegetable_images"
+# --- Source folder path (auto resolve for any OS) ---
+current_dir = os.path.dirname(os.path.abspath(__file__))
+source_folder = os.path.join(current_dir, "images", "vegetable_images")
 
-# ZIP फाईलचं नाव
-zip_filename = "Veg_Fruit_Leafy_Marathi.zip"
+# --- Output ZIP file name ---
+zip_filename = os.path.join(current_dir, "Veg_Fruit_Leafy_Marathi.zip")
 
-with zipfile.ZipFile(zip_filename, "w") as zipf:
+# --- Check if folder exists ---
+if not os.path.exists(source_folder):
+    print(f"⚠️ Error: Folder सापडला नाही -> {source_folder}")
+    exit(1)
+
+# --- Create ZIP file ---
+with zipfile.ZipFile(zip_filename, "w", zipfile.ZIP_DEFLATED) as zipf:
     for root, dirs, files in os.walk(source_folder):
         for file in files:
             filepath = os.path.join(root, file)
