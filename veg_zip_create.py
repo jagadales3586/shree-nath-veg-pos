@@ -1,22 +1,19 @@
-import zipfile
 import os
+import zipfile
 
-# --- Source folder path (direct path) ---
-source_folder = r"C:\Users\jagad\OneDrive\Desktop\vegetable_images"
+# --- Get full folder path for images ---
+folder_path = os.path.join(os.getcwd(), "images")
 
-# --- Output ZIP file name ---
-zip_filename = os.path.join(os.path.dirname(source_folder), "Veg_Fruit_Leafy_Marathi.zip")
-
-# --- Check if folder exists ---
-if not os.path.exists(source_folder):
-    print(f"⚠️ Error: Folder सापडला नाही ➜ {source_folder}")
-    exit(1)
+# --- ZIP file name ---
+zip_filename = "Veg_Fruit_Leafy_Marathi.zip"
 
 # --- Create ZIP file ---
-with zipfile.ZipFile(zip_filename, "w", zipfile.ZIP_DEFLATED) as zipf:
-    for root, dirs, files in os.walk(source_folder):
+with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
+    for root, dirs, files in os.walk(folder_path):
         for file in files:
-            filepath = os.path.join(root, file)
-            zipf.write(filepath, os.path.relpath(filepath, source_folder))
+            file_path = os.path.join(root, file)
+            arcname = os.path.relpath(file_path, folder_path)
+            zipf.write(file_path, arcname)
+            print(f"🟢 Added: {file_path}")
 
-print(f"✅ ZIP फाइल तयार झाली: {zip_filename}")
+print(f"✅ ZIP तयार झाला: {zip_filename}")
