@@ -1,19 +1,19 @@
-import os
-import zipfile
+import os, zipfile
 
-# --- Get full folder path for images ---
+# images चा पूर्ण path (CI आणि लोकल दोन्ही ठिकाणी चालेल)
 folder_path = os.path.join(os.getcwd(), "images", "vegetable_images")
 
-# --- ZIP file name ---
-zip_filename = "Veg_Fruit_Leafy_Marathi.zip"
+# आउटपुट ZIP repo root मध्येच तयार करा
+zip_filename = os.path.join(os.getcwd(), "Veg_Fruit_Leafy_Marathi.zip")
 
-# --- Create ZIP file ---
-with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
+print("Zipping from:", folder_path)
+with zipfile.ZipFile(zip_filename, "w", zipfile.ZIP_DEFLATED) as zipf:
     for root, dirs, files in os.walk(folder_path):
         for file in files:
             file_path = os.path.join(root, file)
+            # ZIP मधील relative path (images फोल्डरचं नाव दिसेल)
             arcname = os.path.relpath(file_path, folder_path)
             zipf.write(file_path, arcname)
-            print(f"🟢 Added: {file_path}")
+            print("Added:", arcname)
 
-print(f"✅ ZIP तयार झाला: {zip_filename}")
+print("ZIP तयार:", zip_filename)

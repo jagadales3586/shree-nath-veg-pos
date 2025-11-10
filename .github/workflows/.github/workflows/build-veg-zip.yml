@@ -1,47 +1,56 @@
-name: Build Veg ZIP
+name: Build Veg ZIP and Upload Release
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Show workspace info (debug)
-        run: |
-          pwd
-          ls -la
-          echo "---- images tree ----"
-          ls -R images || true
-          echo "git list:"
-          git ls-tree -r --name-only HEAD | head -n 50
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Run ZIP creation script
-        run: python veg_zip_create.py
-
-      - name: Verify ZIP size (debug, fail if empty)
+      - name: Install dependencies
         run: |
-          ls -lh Veg_Fruit_Leafy_Marathi.zip
-          BYTES=$(stat -c%s "Veg_Fruit_Leafy_Marathi.zip")
-          echo "ZIP size: $BYTES bytes"
-          if [ "$BYTES" -lt 2000 ]; then
-            echo "ZIP too small. Likely no files added." >&2
-            exit 1
-          fi
+          python -m pip install --upgrade pip
 
-      - name: Upload ZIP as artifact
-        uses: actions/upload-artifact@v4
+      - name: Run ZIP creation script
+        run: |
+          python veg_zip_create.py
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         with:
           name: Veg_Fruit_Leafy_Marathi
           path: Veg_Fruit_Leafy_Marathi.zip
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: Veg_Fruit_Leafy_Marathi
+          path: .
+
+      - name: Create GitHub Release and upload asset
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: Auto Release ${{ github.run_number }}
+          files: Veg_Fruit_Leafy_Marathi.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
