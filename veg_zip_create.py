@@ -2,7 +2,7 @@ import os
 import zipfile
 
 # --- Get full folder path for images ---
-folder_path = os.path.join(os.getcwd(), "images")
+folder_path = os.path.join(os.getcwd(), "images", "vegetable_images")
 
 # --- ZIP file name ---
 zip_filename = "Veg_Fruit_Leafy_Marathi.zip"
